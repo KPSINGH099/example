@@ -4,7 +4,7 @@ const xml2js = require('xml2js');
 
 const parser = new xml2js.Parser();
 
-const directoryPath = './metadata'; // replace with your root folder path
+const directoryPath = 'C:\\Users\\LENOVO\\Downloads\\root\\root1'; // replace with your root folder path
 
 // Function to read and parse XML file
 const readXMLFile = async (filePath) => {
@@ -34,36 +34,53 @@ const getAllFiles = (dirPath, arrayOfFiles) => {
 const processFiles = async () => {
     try {
         const allFiles = getAllFiles(directoryPath);
-        
-        for (const file of allFiles) {
-            if (file.includes('_form.xml')) {
-                const formXML = await readXMLFile(file);
-                const dataMapFile = allFiles.find(f => f.includes('data_map.xml') && f.startsWith(path.dirname(file)));
 
-                if (dataMapFile) {
-                    const dataMapXML = await readXMLFile(dataMapFile);
-                    const dataMapId = dataMapXML.map.$.id;
+        const formFiles = allFiles.filter(file => file.includes('_form.xml'));
+        const dataMapFiles = allFiles.filter(file => file.includes('data_map.xml'));
 
-                    if (formXML && formXML.obj && formXML.obj.FinComboBox) {
-                        formXML.obj.FinComboBox.forEach(comboBox => {
-                            const comboBoxId = comboBox.$.id;
-                            if (comboBoxId === dataMapId) {
-                                console.log(`Match found in ${file}: ${comboBoxId}`);
-                            } else {
-                                console.log(`No match found in ${file} for id: ${comboBoxId}`);
-                            }
-                        });
-                    } else {
-                        console.error(`Invalid structure in ${file}`);
-                    }
+        for (const formFile of formFiles) {
+            const formXML = await readXMLFile(formFile);
+            const currentDir = path.dirname(formFile);
+            const dataMapFile = dataMapFiles.find(file => path.dirname(file) === currentDir);
+
+            if (dataMapFile) {
+                const dataMapXML = await readXMLFile(dataMapFile);
+
+                let dataMapIds = [];
+                if (Array.isArray(dataMapXML.map)) {
+                    dataMapIds = dataMapXML.map.map(item => item.$.id);
+                } else if (dataMapXML.map && dataMapXML.map.$ && dataMapXML.map.$.id) {
+                    dataMapIds = [dataMapXML.map.$.id];
                 } else {
-                    console.error(`No corresponding data_map.xml file found for ${file}`);
+                    console.error(`Invalid structure in ${dataMapFile}`);
+                    continue;
                 }
+
+                if (formXML && formXML.FinComboBox) {
+                    let comboBoxes = formXML.FinComboBox;
+                    if (!Array.isArray(comboBoxes)) {
+                        comboBoxes = [comboBoxes];
+                    }
+
+                    comboBoxes.forEach(comboBox => {
+                        const comboBoxId = comboBox.$.id;
+                        if (dataMapIds.includes(comboBoxId)) {
+                            console.log(`Match found in ${formFile}: ${comboBoxId}`);
+                        } else {
+                            console.log(`No match found in ${formFile} for id: ${comboBoxId}`);
+                        }
+                    });
+                } else {
+                    console.error(`Invalid structure in ${formFile}`);
+                }
+            } else {
+                console.error(`No corresponding data_map.xml file found for ${formFile}`);
             }
         }
     } catch (error) {
         console.error('Error processing files:', error);
     }
 };
+
 
 processFiles();
