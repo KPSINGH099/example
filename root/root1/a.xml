@@ -1,0 +1,5 @@
+<FinComboBox id="x">
+    <properties>
+        <FinDataProviderId>y</FinDataProviderId>
+    </properties>
+</FinComboBox>

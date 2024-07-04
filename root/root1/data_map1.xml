@@ -1,0 +1,25 @@
+<root>
+	<map id="x" srvclass="rest">
+		<ui type="abc">id</ui>
+	</map>
+	<map id="abc1" srvclass="rest">
+		<ui type="abc">id</ui>
+	</map>
+	<map id="abc2" srvclass="rest">
+		<ui type="abc">id</ui>
+	</map>
+	<FinComboBox id="c">
+		<properties>
+			<def>xyz</def>
+			<FinDataProviderId>CC</FinDataProviderId>
+			<abc></abc>
+		</properties>
+	</FinComboBox>
+	<FinComboBox id="c">
+		<properties>
+			<def>xyz</def>
+			<FinDataProviderId>CC</FinDataProviderId>
+			<abc></abc>
+		</properties>
+	</FinComboBox>
+</root>

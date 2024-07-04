@@ -1,0 +1,7 @@
+<FinComboBox id="c">
+    <properties>
+        <def>xyz</def>
+        <FinDataProviderId>CC</FinDataProviderId>
+        <abc></abc>
+    </properties>
+</FinComboBox>

@@ -1,36 +1,3 @@
-const fs = require('fs');
-const path = require('path');
-const xml2js = require('xml2js');
-
-const parser = new xml2js.Parser();
-
-const directoryPath = 'C:\\Users\\LENOVO\\Downloads\\root'; // replace with your root folder path
-
-// Function to read and parse XML file
-const readXMLFile = async (filePath) => {
-    const fileContent = fs.readFileSync(filePath, 'utf-8');
-    const result = await parser.parseStringPromise(fileContent);
-    return result;
-};
-
-// Function to recursively get all files in directory
-const getAllFiles = (dirPath, arrayOfFiles) => {
-    const files = fs.readdirSync(dirPath);
-
-    arrayOfFiles = arrayOfFiles || [];
-
-    files.forEach((file) => {
-        if (fs.statSync(path.join(dirPath, file)).isDirectory()) {
-            arrayOfFiles = getAllFiles(path.join(dirPath, file), arrayOfFiles);
-        } else {
-            arrayOfFiles.push(path.join(dirPath, file));
-        }
-    });
-
-    return arrayOfFiles;
-};
-
-// Function to process files
 const processFiles = async () => {
     try {
         const allFiles = getAllFiles(directoryPath);
@@ -39,6 +6,7 @@ const processFiles = async () => {
         const dataMapFiles = allFiles.filter(file => file.includes('data_map.xml'));
 
         for (const formFile of formFiles) {
+            //call processXml instead
             const formXML = await readXMLFile(formFile);
             const currentDir = path.dirname(formFile);
             const dataMapFile = dataMapFiles.find(file => path.dirname(file) === currentDir);
@@ -81,6 +49,3 @@ const processFiles = async () => {
         console.error('Error processing files:', error);
     }
 };
-
-
-processFiles();

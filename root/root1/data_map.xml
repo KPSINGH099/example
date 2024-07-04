@@ -1,0 +1,11 @@
+<root>
+  <map id="x" srvclass="rest">
+    <ui type="abc">id</ui>
+  </map>
+  <map id="abc1" srvclass="rest">
+    <ui type="abc">id</ui>
+  </map>
+  <map id="abc2" srvclass="rest">
+    <ui type="abc">id</ui>
+  </map>
+</root>
