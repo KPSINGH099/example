@@ -9,19 +9,14 @@ function processXmlFile(filepath) {
             console.error(`Error reading file ${filepath}:`, err);
             return;
         }
-        console.log(data)
-        //buffer of data is passed
-        //fs.readFile simply returns bufffer of data for xml files if path exits
+ 
         xml2js.parseString(data, (err, result) => {
             if (err) {
                 console.error(`Error parsing XML file ${filepath}:`, err);
                 return;
             }
-            console.log(result);
-            console.log(result.root.map);
-            console.log(Array.isArray(result.root.map));
-            //console.log(result. FinComboBox.$.id);
-            //extractData(filepath, result);
+        
+        extractData(filepath, result);
         });
     });
 }
@@ -66,3 +61,29 @@ processXmlFile("C:\\Users\\LENOVO\\Downloads\\root\\root1\\a_form.xml")
   }
 }
 */
+async function processAllXmlFiles(directory) {
+    try {
+        const files = await fs.readdir(directory);
+        const xmlFiles = files.filter(file => file.includes('datamap.xml'));
+        
+        const allResults = [];
+        for (const file of xmlFiles) {
+            const filePath = path.join(directory, file);
+            const result = await processXmlFile(filePath);
+            allResults.push(...result);
+        }
+        return allResults;
+    } catch (err) {
+        console.error(`Error processing directory ${directory}:`, err);
+        throw err;
+    }
+}
+
+// Usage example
+processAllXmlFiles('path/to/your/directory')
+    .then(finalArray => {
+        console.log('Final combined data array:', finalArray);
+    })
+    .catch(error => {
+        console.error('Error processing XML files:', error);
+    });
